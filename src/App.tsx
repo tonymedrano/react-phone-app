@@ -1,24 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
+import axios from 'axios';
+
+import AppList from "./components/app-list/app-list";
+import AppListItem from "./components/app-list-item/app-list-item";
+
 function App() {
+  const [data, setData] = useState({ phones: [] });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result: any = await axios(
+        'http://localhost:8081/phones',
+      );
+ 
+      setData(result.data);
+    };
+ 
+    fetchData();
+    
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Phone List</h1>
+      <hr />
+      <AppList>
+      {data.phones.map((phone: any) => (
+        <AppListItem 
+        key={phone.id}
+        name={phone.name}
+        image={phone.image}
+        description={phone.description}
+        color={phone.color}
+        />
+      ))}
+      </AppList>
     </div>
   );
 }
